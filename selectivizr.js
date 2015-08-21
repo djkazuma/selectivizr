@@ -70,7 +70,7 @@ References:
 	var RE_COMMENT							= /(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)\s*/g;
 	var RE_IMPORT							= /@import\s*(?:(?:(?:url\(\s*(['"]?)(.*)\1)\s*\))|(?:(['"])(.*)\3))[^;]*;/g;
 	var RE_ASSET_URL 						= /\burl\(\s*(["']?)(?!data:)([^"')]+)\1\s*\)/g;
-	var RE_PSEUDO_STRUCTURAL				= /^:(empty|(first|last|only|nth(-last)?)-(child|of-type))$/;
+	var RE_PSEUDO_STRUCTURAL				= /^:(empty|(last|only|nth(-last)?)-(child|of-type))$/;
 	var RE_PSEUDO_ELEMENTS					= /:(:first-(?:line|letter))/g;
 	var RE_SELECTOR_GROUP					= /(^|})\s*([^\{]*?[\[:][^{]+)/g;
 	var RE_SELECTOR_PARSE					= /([ +~>])|(:[a-z-]+(?:\(.*?\)+)?)|(\[.*?\])/g; 
@@ -195,6 +195,8 @@ References:
 									toggleElementClass( e, className, e.checked !== isNegated );
 								} 							
 							})
+                            // It's not working if already checked.So add this code.
+							toggleElementClass( e, className, e.checked !== isNegated );
 						}
 						return e.checked !== isNegated;
 					}
@@ -349,7 +351,10 @@ References:
 		var newClassName = toggleClass(oldClassName, className, on);
 		if (newClassName != oldClassName) {
 			elm.className = newClassName;
-			elm.parentNode.className += EMPTY_STRING;
+            // IE8 needs to delay
+            setTimeout(function(){
+			    elm.parentNode.className += EMPTY_STRING;
+            }, 10);
 		}
 	};
 
